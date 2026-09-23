@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 from datetime import datetime
 from typing import Any, Callable, Dict, List, Optional
 from zoneinfo import ZoneInfo
@@ -79,11 +80,14 @@ class KurobbsClient:
         return res
 
     def get_mine_info(self, type: int = 1) -> Dict[str, Any]:
-        """Get mine info."""
-        res = self._post(self.USER_MINE_URL, {"type": type})
-        if not res.data:
-            raise KurobbsClientException("User info is missing in response.")
-        return res.data
+        """Get mine info, retrying when the API returns empty data."""
+        for attempt in range(5):
+            res = self._post(self.USER_MINE_URL, {"type": type})
+            if res.data:
+                return res.data
+            logger.warning("mineV2 returned empty data (attempt {})", attempt + 1)
+            time.sleep(3)
+        raise KurobbsClientException("User info is missing in response.")
 
     def get_user_game_list(self, user_id: int) -> Dict[str, Any]:
         """Get the list of games for the user."""
