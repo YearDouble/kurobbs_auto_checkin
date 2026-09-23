@@ -34,6 +34,7 @@ jobs:
         env:
           TOKEN: ${{ secrets.TOKEN }}
           DEBUG: ${{ secrets.DEBUG }}
+          USER_ID: ${{ secrets.USER_ID }}
           BARK_DEVICE_KEY: ${{ secrets.BARK_DEVICE_KEY }}
           BARK_SERVER_URL: ${{ secrets.BARK_SERVER_URL }}
           SERVER3_SEND_KEY: ${{ secrets.SERVER3_SEND_KEY }} # ServerChan3
