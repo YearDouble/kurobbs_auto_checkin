@@ -127,9 +127,10 @@ class KurobbsClient:
     ):
         """Handle the common logic for sign-in actions."""
         resp = action_method()
-        if resp.success:
-            self.result[action_name] = success_message
-            logger.info("{} -> {}", action_name, success_message)
+        already_signed = bool(resp.msg) and ("重复签到" in resp.msg or "已签到" in resp.msg)
+        if resp.success or already_signed:
+            self.result[action_name] = success_message + ("（今日已签过）" if already_signed else "")
+            logger.info("{} -> {}", action_name, self.result[action_name])
         else:
             self.exceptions.append(KurobbsClientException(f"{failure_message}, {resp.msg}"))
 
