@@ -98,8 +98,13 @@ class KurobbsClient:
 
     def checkin(self) -> Response:
         """Perform the check-in operation."""
-        mine_info = self.get_mine_info()
-        user_game_list = self.get_user_game_list(user_id=mine_info.get("mine", {}).get("userId", 0))
+        env_user_id = os.getenv("USER_ID", "").strip()
+        if env_user_id:
+            user_id = int(env_user_id)
+        else:
+            mine_info = self.get_mine_info()
+            user_id = mine_info.get("mine", {}).get("userId", 0)
+        user_game_list = self.get_user_game_list(user_id=user_id)
 
         beijing_tz = ZoneInfo("Asia/Shanghai")
         beijing_time = datetime.now(beijing_tz)
